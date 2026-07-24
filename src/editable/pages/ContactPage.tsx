@@ -6,19 +6,13 @@ import { getFactoryState } from '@/design/factory/get-factory-state'
 import { getProductKind } from '@/design/factory/get-product-kind'
 import { EditableContactLeadForm } from '@/editable/components/EditableContactLeadForm'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
-
-const tone = {
-  shell: 'bg-[var(--slot4-page-bg)] text-[var(--slot4-page-text)]',
-  panel: 'border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)]',
-  soft: 'border border-[var(--editable-border)] bg-[var(--slot4-panel-bg)]',
-  muted: 'text-[var(--slot4-muted-text)]',
-  action: 'bg-[var(--slot4-accent-fill)] text-[var(--slot4-on-accent)] hover:opacity-90',
-}
+import { editableDesignContract as dc } from '@/editable/layouts/design-contract'
+import { EditableReveal } from '@/editable/shell/EditableReveal'
 
 function getLanes(kind: ReturnType<typeof getProductKind>) {
   if (kind === 'directory') {
     return [
-      { icon: Building2, title: 'Business onboarding', body: 'Add listings, verify operational details, and bring your business surface live quickly.' },
+      { icon: Building2, title: 'Directory onboarding', body: 'Add a place, verify operational details, and get it live in the directory quickly.' },
       { icon: Phone, title: 'Partnership support', body: 'Talk through bulk publishing, local growth, and operational setup questions.' },
       { icon: MapPin, title: 'Coverage requests', body: 'Need a new geography or category lane? We can shape the directory around it.' },
     ]
@@ -38,8 +32,8 @@ function getLanes(kind: ReturnType<typeof getProductKind>) {
     ]
   }
   return [
-    { icon: Bookmark, title: 'Collection submissions', body: 'Suggest resources, boards, and links that deserve a place in the library.' },
-    { icon: Mail, title: 'Resource partnerships', body: 'Coordinate curation projects, reference pages, and link programs.' },
+    { icon: Bookmark, title: 'Library submissions', body: 'Suggest references, primary sources, and links that deserve a place on the shelf.' },
+    { icon: Mail, title: 'Reference partnerships', body: 'Coordinate curation projects, reference pages, and link programs.' },
     { icon: Sparkles, title: 'Curator support', body: 'Need help organizing shelves, collections, or profile-connected boards?' },
   ]
 }
@@ -50,30 +44,85 @@ export default function ContactPage() {
   const lanes = getLanes(productKind)
 
   return (
-    <EditableSiteShell className={tone.shell}>
-      <main className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--slot4-accent)]">{pagesContent.contact.eyebrow}</p>
-            <h1 className="editable-display mt-4 text-5xl font-semibold tracking-[-0.02em]">{pagesContent.contact.title}</h1>
-            <p className={`mt-5 max-w-2xl text-sm leading-8 ${tone.muted}`}>{pagesContent.contact.description}</p>
-            <div className="mt-8 space-y-4">
-              {lanes.map((lane) => (
-                <div key={lane.title} className={`rounded-sm p-5 ${tone.soft}`}>
-                  <lane.icon className="h-5 w-5 text-[var(--slot4-accent)]" />
-                  <h2 className="editable-display mt-3 text-xl font-semibold">{lane.title}</h2>
-                  <p className={`mt-2 text-sm leading-7 ${tone.muted}`}>{lane.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+    <EditableSiteShell>
+      <main className="min-h-screen">
+        <section className={`${dc.shell.section} pt-28 pb-16 sm:pt-40 sm:pb-20`}>
+          <EditableReveal>
+            <span className="editable-mono inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-white/55">
+              <span className="h-px w-6 bg-white/25" />
+              {pagesContent.contact.eyebrow}
+            </span>
+          </EditableReveal>
+          <EditableReveal index={1}>
+            <h1 className={`mt-8 max-w-4xl ${dc.type.display}`}>
+              {renderTitleWithItalic(pagesContent.contact.title)}
+            </h1>
+          </EditableReveal>
+          <EditableReveal index={2}>
+            <p className="mt-8 max-w-2xl text-lg leading-[1.65] text-white/70 sm:text-xl">
+              {pagesContent.contact.description}
+            </p>
+          </EditableReveal>
+        </section>
 
-          <div className={`rounded-sm p-7 ${tone.panel}`}>
-            <h2 className="editable-display text-2xl font-semibold">{pagesContent.contact.formTitle}</h2>
-            <EditableContactLeadForm />
+        <section className={`${dc.shell.section} pb-28 pt-4 sm:pb-40`}>
+          <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <EditableReveal>
+              <div className="grid gap-4">
+                <p className="editable-mono text-[11px] uppercase tracking-[0.28em] text-white/55">Routing lanes</p>
+                {lanes.map((lane, i) => (
+                  <div
+                    key={lane.title}
+                    className="rounded-[var(--editable-radius-lg)] border border-white/10 bg-[var(--slot4-panel-bg)] p-7"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--slot4-accent-soft)] text-[var(--slot4-accent)]">
+                        <lane.icon className="h-4 w-4" />
+                      </span>
+                      <span className="editable-mono text-[10px] uppercase tracking-[0.24em] text-white/50">
+                        Lane {String(i + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <h2 className="editable-display mt-5 text-[1.35rem] leading-[1.2] tracking-[-0.015em] text-white">
+                      {lane.title}
+                    </h2>
+                    <p className="mt-3 text-[14.5px] leading-[1.6] text-white/60">{lane.body}</p>
+                  </div>
+                ))}
+              </div>
+            </EditableReveal>
+
+            <EditableReveal index={1}>
+              <div className="rounded-[var(--editable-radius-lg)] border border-white/10 bg-[var(--slot4-panel-bg)] p-8 sm:p-10">
+                <p className="editable-mono text-[11px] uppercase tracking-[0.28em] text-[var(--slot4-accent)]">
+                  Send a message
+                </p>
+                <h2 className="editable-display mt-4 text-[clamp(1.5rem,2.4vw,2rem)] leading-[1.15] tracking-[-0.02em] text-white">
+                  {pagesContent.contact.formTitle}
+                </h2>
+                <div className="mt-8">
+                  <EditableContactLeadForm />
+                </div>
+              </div>
+            </EditableReveal>
           </div>
         </section>
       </main>
     </EditableSiteShell>
+  )
+}
+
+function renderTitleWithItalic(text: string) {
+  const clean = String(text || '').replace(/\s+/g, ' ').trim()
+  const words = clean.split(' ')
+  if (words.length < 4) return <span>{clean}</span>
+  const italicCount = Math.min(3, Math.max(1, Math.floor(words.length / 5)))
+  const head = words.slice(0, words.length - italicCount).join(' ')
+  const tail = words.slice(-italicCount).join(' ')
+  return (
+    <>
+      <span>{head} </span>
+      <span className="editable-display-italic text-[var(--slot4-accent)]">{tail}</span>
+    </>
   )
 }
