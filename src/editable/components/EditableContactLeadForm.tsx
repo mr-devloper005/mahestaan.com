@@ -1,9 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle2, Loader2 } from 'lucide-react'
+import { ArrowUpRight, CheckCircle2, Loader2 } from 'lucide-react'
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error'
+
+const inputClass =
+  'h-12 rounded-[var(--editable-radius)] border border-white/10 bg-white/[0.04] px-4 text-[15px] font-medium text-white outline-none transition-colors duration-300 placeholder:text-white/40 focus:border-white/40 focus:bg-white/[0.06]'
+
+const labelClass = 'editable-mono grid gap-2 text-[10px] uppercase tracking-[0.28em] text-white/55'
 
 export function EditableContactLeadForm() {
   const [status, setStatus] = useState<FormStatus>('idle')
@@ -34,7 +39,7 @@ export function EditableContactLeadForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-6 rounded-sm border border-[var(--editable-border)] bg-[var(--slot4-panel-bg)] p-6 md:p-8">
+    <form onSubmit={handleSubmit}>
       <div className="grid gap-4 md:grid-cols-2">
         <Field name="name" label="Full name" placeholder="Your name" required />
         <Field name="email" type="email" label="Email address" placeholder="you@example.com" required />
@@ -43,19 +48,25 @@ export function EditableContactLeadForm() {
         <Field name="phone" label="Phone number" placeholder="Optional" />
         <Field name="subject" label="Subject" placeholder="How can we help?" />
       </div>
-      <label className="mt-4 grid gap-2 text-sm font-semibold text-[var(--slot4-muted-text)]">
+      <label className={`mt-4 ${labelClass}`}>
         Message
         <textarea
           name="message"
           required
           rows={6}
-          placeholder="Tell us what you need help with..."
-          className="rounded-sm border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)] px-4 py-3 text-base font-medium text-[var(--slot4-page-text)] outline-none transition placeholder:text-[var(--slot4-soft-muted-text)] focus:border-[var(--slot4-accent)]"
+          placeholder="Tell us what you need help with…"
+          className="rounded-[var(--editable-radius)] border border-white/10 bg-white/[0.04] px-4 py-3 text-[15px] font-medium text-white outline-none transition-colors duration-300 placeholder:text-white/40 focus:border-white/40 focus:bg-white/[0.06]"
         />
       </label>
       <input name="company" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
       {message ? (
-        <div className={`mt-5 flex items-start gap-3 rounded-sm px-4 py-3 text-sm font-semibold ${status === 'success' ? 'bg-emerald-950/40 text-emerald-300' : 'bg-red-950/40 text-red-300'}`}>
+        <div
+          className={`mt-5 flex items-start gap-3 rounded-[var(--editable-radius)] px-4 py-3 text-sm font-medium ${
+            status === 'success'
+              ? 'border border-[var(--slot4-accent-secondary)]/40 bg-[color-mix(in_oklab,var(--slot4-accent-secondary)_16%,transparent)] text-white'
+              : 'border border-[var(--slot4-accent)]/40 bg-[var(--slot4-accent-soft)] text-[var(--slot4-accent)]'
+          }`}
+        >
           {status === 'success' ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" /> : null}
           <span>{message}</span>
         </div>
@@ -63,26 +74,35 @@ export function EditableContactLeadForm() {
       <button
         type="submit"
         disabled={status === 'submitting'}
-        className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--slot4-accent-fill)] px-6 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--slot4-on-accent)] shadow-[0_8px_24px_rgba(79,70,229,0.28)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+        className="group mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--slot4-accent)] pl-6 pr-2 text-sm font-medium text-[#121212] transition-[background,transform] duration-300 hover:bg-[var(--slot4-accent-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === 'submitting' ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-        Send message
+        <span>Send message</span>
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-black/15 transition-transform duration-300 group-hover:translate-x-0.5">
+          <ArrowUpRight className="h-4 w-4" />
+        </span>
       </button>
     </form>
   )
 }
 
-function Field({ name, label, type = 'text', placeholder, required = false }: { name: string; label: string; type?: string; placeholder?: string; required?: boolean }) {
+function Field({
+  name,
+  label,
+  type = 'text',
+  placeholder,
+  required = false,
+}: {
+  name: string
+  label: string
+  type?: string
+  placeholder?: string
+  required?: boolean
+}) {
   return (
-    <label className="grid gap-2 text-sm font-semibold text-[var(--slot4-muted-text)]">
+    <label className={labelClass}>
       {label}
-      <input
-        name={name}
-        type={type}
-        required={required}
-        placeholder={placeholder}
-        className="h-12 rounded-sm border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)] px-4 text-base font-medium text-[var(--slot4-page-text)] outline-none transition placeholder:text-[var(--slot4-soft-muted-text)] focus:border-[var(--slot4-accent)]"
-      />
+      <input name={name} type={type} required={required} placeholder={placeholder} className={inputClass} />
     </label>
   )
 }

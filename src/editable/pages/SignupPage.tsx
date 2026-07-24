@@ -4,26 +4,59 @@ import { buildPageMetadata } from '@/lib/seo'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
 import { EditableLocalSignupForm } from '@/editable/components/EditableLocalAuthForms'
 import { pagesContent } from '@/editable/content/pages.content'
+import { editableDesignContract as dc } from '@/editable/layouts/design-contract'
+import { EditableReveal } from '@/editable/shell/EditableReveal'
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildPageMetadata({ path: '/signup', title: 'Sign up', description: pagesContent.auth.signup.metadataDescription })
+  return buildPageMetadata({
+    path: '/signup',
+    title: 'Sign up',
+    description: pagesContent.auth.signup.metadataDescription,
+  })
 }
 
 export default function SignupPage() {
   return (
     <EditableSiteShell>
-      <main className="bg-[var(--slot4-panel-bg)] text-[var(--slot4-page-text)]">
-        <section className="mx-auto grid min-h-[calc(100vh-12rem)] max-w-[var(--editable-container)] items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[0.9fr_1fr] lg:px-8">
-          <div className="rounded-2xl border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)] p-7 shadow-[0_4px_24px_rgba(0,0,0,0.08)] sm:p-9">
-            <h1 className="text-2xl font-bold tracking-[-0.01em]">{pagesContent.auth.signup.formTitle}</h1>
-            <EditableLocalSignupForm />
-            <p className="mt-6 text-sm text-[var(--slot4-muted-text)]">Already have an account? <Link href="/login" className="font-semibold text-[var(--slot4-accent)] underline-offset-4 hover:underline">{pagesContent.auth.signup.loginCta}</Link></p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--slot4-accent)]">{pagesContent.auth.signup.badge}</p>
-            <h2 className="mt-4 max-w-xl text-4xl font-extrabold leading-[1.05] tracking-[-0.02em] sm:text-5xl">{pagesContent.auth.signup.title}</h2>
-            <p className="mt-5 max-w-lg text-base leading-7 text-[var(--slot4-muted-text)]">{pagesContent.auth.signup.description}</p>
-          </div>
+      <main className="min-h-screen">
+        <section
+          className={`${dc.shell.section} grid min-h-[calc(100vh-6rem)] items-center gap-16 pt-24 pb-24 sm:pt-32 sm:pb-32 lg:grid-cols-[0.9fr_1.1fr]`}
+        >
+          <EditableReveal>
+            <div className="rounded-[var(--editable-radius-lg)] border border-white/10 bg-[var(--slot4-panel-bg)] p-8 sm:p-10 lg:order-1 lg:col-span-1">
+              <p className="editable-mono text-[11px] uppercase tracking-[0.28em] text-[var(--slot4-accent)]">
+                New account
+              </p>
+              <h2 className="editable-display mt-3 text-[1.75rem] leading-[1.15] tracking-[-0.02em] text-white">
+                {pagesContent.auth.signup.formTitle}
+              </h2>
+              <div className="mt-8">
+                <EditableLocalSignupForm />
+              </div>
+              <p className="mt-8 text-sm text-white/55">
+                Already have an account?{' '}
+                <Link href="/login" className="font-medium text-[var(--slot4-accent)] underline-offset-4 hover:underline">
+                  {pagesContent.auth.signup.loginCta}
+                </Link>
+              </p>
+            </div>
+          </EditableReveal>
+
+          <EditableReveal index={1}>
+            <div>
+              <span className="editable-mono inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-white/55">
+                <span className="h-px w-6 bg-white/25" />
+                {pagesContent.auth.signup.badge}
+              </span>
+              <h1 className={`mt-8 max-w-2xl ${dc.type.heroTitle}`}>
+                <span>Set up your </span>
+                <span className="editable-display-italic text-[var(--slot4-accent)]">contributor account.</span>
+              </h1>
+              <p className="mt-8 max-w-lg text-lg leading-[1.6] text-white/70">
+                {pagesContent.auth.signup.description}
+              </p>
+            </div>
+          </EditableReveal>
         </section>
       </main>
     </EditableSiteShell>
